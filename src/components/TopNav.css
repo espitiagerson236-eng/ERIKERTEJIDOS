@@ -1,0 +1,10 @@
+.top-nav {
+  background: linear-gradient(90deg, #1E40AF 0%, #1D4ED8 100%);
+  color: #FFFFFF;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
