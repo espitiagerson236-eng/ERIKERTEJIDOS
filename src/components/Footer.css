@@ -40,4 +40,33 @@
 .footer-copyright {
   font-size: 0.8rem;
   color: #64748B;
+  display: contents;
+}
+.instagram-float {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 95px; 
+  right: 25px;
+ 
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+  color: #fff;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.instagram-float:hover {
+  transform: scale(1.1);
+  box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.3);
+}
+
+.instagram-icon {
+  width: 32px;
+  height: 32px;
+  fill: white;
 }
