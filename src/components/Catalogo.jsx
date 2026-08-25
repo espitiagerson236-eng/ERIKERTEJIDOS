@@ -1,15 +1,162 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navbar } from "./NavBar";
 import './Catalogo.css';
 
-export const Catalogo = () => {
-    return(
-        <div className="catalogo-page">
-            <Navbar />
-            <div className="catalogo-content">
-                <h1>Coleccion de Gorros Artesanales</h1>
-                <p>Aqui empezaras a maquetar tus productos</p>
-            </div>
-        </div>
+import bufanda1 from '../assets/bufanda1.jpeg';
+import bufanda2 from '../assets/bufanda2.jpeg';
+import cuelleros from '../assets/cuelleros.jpeg';
+import geti1 from '../assets/geti1.jpeg';
+import getiYruana from '../assets/getiYruana.jpeg';
+import getiYruana2 from '../assets/getiYruana2.jpeg';
+import gorropepas1 from '../assets/gorropepas1.jpeg';
+import gorropepas2 from '../assets/gorrospepas2.jpeg';
+import pasamontaña from '../assets/pasamontaña.jpeg';
+
+// Base de datos con múltiples imágenes por producto
+const productosBasicos = [
+  {
+    id: 1,
+    nombre: 'Ruana Tejida',
+    categoria: 'ruanas',
+    precio: 120000,
+    imagenes: [getiYruana, getiYruana2],
+    descripcion: 'Ruana artesanal tejida a mano, suave y térmica.'
+  },
+  {
+    id: 2,
+    nombre: 'Gorro Tejido',
+    categoria: 'gorros',
+    precio: 25000,
+    imagenes: [gorropepas1, gorropepas2],
+    descripcion: 'Gorro tejido ideal para protegerte del frío.'
+  },
+  {
+    id: 3,
+    nombre: 'Saco Yeti Térmico',
+    categoria: 'yetis',
+    precio: 95000,
+    imagenes: [geti1],
+    descripcion: 'Prenda tipo piel de ovejo/peluche ideal para frío intenso.'
+  },
+  {
+    id: 4,
+    nombre: 'Pasamontañas Tejido',
+    categoria: 'pasamontanas',
+    precio: 35000,
+    imagenes: [pasamontaña],
+    descripcion: 'Protección completa para el rostro y cuello.'
+  },
+  {
+    id: 5,
+    nombre: 'Cuellero Térmico',
+    categoria: 'cuelleros',
+    precio: 20000,
+    imagenes: [cuelleros],
+    descripcion: 'Cuellero suave para mantener la calidez en el cuello.'
+  }
+];
+
+// Componente individual para cada producto con carrusel de imágenes
+const TarjetaProducto = ({ producto }) => {
+  const [indiceImagen, setIndiceImagen] = useState(0);
+
+  const siguienteImagen = () => {
+    setIndiceImagen((prev) => (prev + 1) % producto.imagenes.length);
+  };
+
+  const anteriorImagen = () => {
+    setIndiceImagen((prev) => 
+      prev === 0 ? producto.imagenes.length - 1 : prev - 1
     );
-}
+  };
+
+  return (
+    <div className="producto-card">
+      <div className="carrusel-container">
+        <img 
+          src={producto.imagenes[indiceImagen]} 
+          alt={producto.nombre} 
+          className="producto-imagen" 
+        />
+
+        {/* Solo muestra flechas si hay más de 1 imagen */}
+        {producto.imagenes.length > 1 && (
+          <>
+            <button className="flecha flecha-izquierda" onClick={anteriorImagen}>
+              &#10094;
+            </button>
+            <button className="flecha flecha-derecha" onClick={siguienteImagen}>
+              &#10095;
+            </button>
+            <div className="puntos-indicadores">
+              {producto.imagenes.map((_, idx) => (
+                <span 
+                  key={idx} 
+                  className={`punto ${idx === indiceImagen ? 'activo' : ''}`}
+                  onClick={() => setIndiceImagen(idx)}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="producto-info">
+        <h3>{producto.nombre}</h3>
+        <p className="descripcion">{producto.descripcion}</p>
+        <p className="precio">${producto.precio.toLocaleString('es-CO')}</p>
+        <button className="btn-agregar">
+          Añadir al Carrito
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const Catalogo = () => {
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todos');
+
+  const productosFiltrados = categoriaSeleccionada === 'todos'
+    ? productosBasicos
+    : productosBasicos.filter(p => p.categoria === categoriaSeleccionada);
+
+  const categorias = [
+    { key: 'todos', label: 'Todos' },
+    { key: 'ruanas', label: 'Ruanas' },
+    { key: 'gorros', label: 'Gorros' },
+    { key: 'yetis', label: 'Yetis' },
+    { key: 'pasamontanas', label: 'Pasamontañas' },
+    { key: 'cuelleros', label: 'Cuelleros' }
+  ];
+
+  return (
+    <div className="catalogo-page">
+      <Navbar />
+      <div className="catalogo-content">
+        <h1>Coleccion de ERIKER-TEJIDOS</h1>
+        <p>Empieza a comprar tus productos aqui</p>
+
+        {/* Botones de filtro por categoría */}
+        <div className="filtros-categoria">
+          {categorias.map(cat => (
+            <button
+              key={cat.key}
+              className={categoriaSeleccionada === cat.key ? 'btn-filtro activo' : 'btn-filtro'}
+              onClick={() => setCategoriaSeleccionada(cat.key)}
+            >
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Malla de Productos */}
+        <div className="productos-grid">
+          {productosFiltrados.map((producto) => (
+            <TarjetaProducto key={producto.id} producto={producto} />
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+};
