@@ -10,7 +10,7 @@ export const Header = () => {
         <a href="/" className="brand-logo">
           ERIKER <span className="highlight">TEJIDOS</span>
         </a>
-        <p className="brand-tagline">Gorros artesanales hechos a mano</p>
+        <p className="brand-tagline">Gorros artesanales </p>
       </div>
     </header>
   );
