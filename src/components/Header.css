@@ -7,6 +7,9 @@
 .header-container {
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .brand-logo {
@@ -26,4 +29,10 @@
   font-size: 0.85rem;
   margin-top: 0.2rem;
   letter-spacing: 0.5px;
+}
+.logo{
+  width: 45px;    
+  height: 45px;    
+  border-radius: 50%; 
+  object-fit: cover
 }
