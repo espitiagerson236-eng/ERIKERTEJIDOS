@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navbar } from "./NavBar";
+import { useCart } from '../Context/CartContext'; // Importamos el contexto del carrito
 import './Catalogo.css';
 
 import bufanda1 from '../assets/bufanda1.jpeg';
@@ -12,7 +12,7 @@ import gorropepas1 from '../assets/gorropepas1.jpeg';
 import gorropepas2 from '../assets/gorrospepas2.jpeg';
 import pasamontaña from '../assets/pasamontaña.jpeg';
 
-// Base de datos con múltiples imágenes por producto
+// Base de datos de productos
 const productosBasicos = [
   {
     id: 1,
@@ -59,6 +59,7 @@ const productosBasicos = [
 // Componente individual para cada producto con carrusel de imágenes
 const TarjetaProducto = ({ producto }) => {
   const [indiceImagen, setIndiceImagen] = useState(0);
+  const { agregarAlCarrito } = useCart(); // Conectamos la función para agregar
 
   const siguienteImagen = () => {
     setIndiceImagen((prev) => (prev + 1) % producto.imagenes.length);
@@ -79,7 +80,6 @@ const TarjetaProducto = ({ producto }) => {
           className="producto-imagen" 
         />
 
-        {/* Solo muestra flechas si hay más de 1 imagen */}
         {producto.imagenes.length > 1 && (
           <>
             <button className="flecha flecha-izquierda" onClick={anteriorImagen}>
@@ -105,7 +105,12 @@ const TarjetaProducto = ({ producto }) => {
         <h3>{producto.nombre}</h3>
         <p className="descripcion">{producto.descripcion}</p>
         <p className="precio">${producto.precio.toLocaleString('es-CO')}</p>
-        <button className="btn-agregar">
+        
+        {/* Evento que envía el producto al carrito */}
+        <button 
+          className="btn-agregar"
+          onClick={() => agregarAlCarrito(producto)}
+        >
           Añadir al Carrito
         </button>
       </div>
@@ -131,7 +136,7 @@ export const Catalogo = () => {
 
   return (
     <div className="catalogo-page">
-      <Navbar />
+      {/* ❌ Se eliminó el <Navbar /> que duplicaba el menú */}
       <div className="catalogo-content">
         <h1>Coleccion de ERIKER-TEJIDOS</h1>
         <p>Empieza a comprar tus productos aqui</p>

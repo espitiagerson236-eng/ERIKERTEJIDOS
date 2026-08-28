@@ -1,27 +1,90 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+.navbar {
+  background-color: #1D4ED8; /* Azul Rey Dominante */
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
 
-* {
-  box-sizing: border-box;
+.navbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.6rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
   margin: 0;
   padding: 0;
 }
 
-body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background-color: #F8FAFC;
-  color: #0F172A;
-  -webkit-font-smoothing: antialiased;
+.nav-item {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
-.app-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+.nav-item:hover,
+.nav-item.active {
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
-.main-content {
-  flex: 1;
+/* Contenedor para alinear Login y Carrito a la derecha */
+.nav-actions {
   display: flex;
-  flex-direction: column;
-  padding: 0;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Botón Iniciar Sesión */
+.btn-login-nav {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.btn-login-nav:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-color: #FFFFFF;
+}
+
+/* Botón Carrito */
+.cart-btn {
+  background-color: #FFFFFF;
+  color: #1D4ED8;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+}
+
+.cart-btn:hover {
+  transform: translateY(-1px);
+}
+
+.cart-badge {
+  background-color: #1E40AF;
+  color: #FFFFFF;
+  border-radius: 50%;
+  padding: 2px 7px;
+  font-size: 0.75rem;
 }
