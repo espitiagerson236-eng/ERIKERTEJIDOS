@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Navbar } from "./NavBar";
 import './Catalogo.css';
 
@@ -12,7 +12,7 @@ import gorropepas1 from '../assets/gorropepas1.jpeg';
 import gorropepas2 from '../assets/gorrospepas2.jpeg';
 import pasamontaña from '../assets/pasamontaña.jpeg';
 
-// Base de datos con múltiples imágenes por producto
+// Productos locales por defecto (por si la base de datos no tiene elementos aún)
 const productosBasicos = [
   {
     id: 1,
@@ -60,13 +60,18 @@ const productosBasicos = [
 const TarjetaProducto = ({ producto }) => {
   const [indiceImagen, setIndiceImagen] = useState(0);
 
+  // Asegura que las imágenes se lean bien tanto si vienen de MongoDB como de los locales
+  const listaImagenes = producto.imagenes && producto.imagenes.length > 0 
+    ? producto.imagenes 
+    : [bufanda1]; // Imagen por defecto si no trae arreglo de imágenes
+
   const siguienteImagen = () => {
-    setIndiceImagen((prev) => (prev + 1) % producto.imagenes.length);
+    setIndiceImagen((prev) => (prev + 1) % listaImagenes.length);
   };
 
   const anteriorImagen = () => {
     setIndiceImagen((prev) => 
-      prev === 0 ? producto.imagenes.length - 1 : prev - 1
+      prev === 0 ? listaImagenes.length - 1 : prev - 1
     );
   };
 
@@ -74,13 +79,13 @@ const TarjetaProducto = ({ producto }) => {
     <div className="producto-card">
       <div className="carrusel-container">
         <img 
-          src={producto.imagenes[indiceImagen]} 
+          src={listaImagenes[indiceImagen]} 
           alt={producto.nombre} 
           className="producto-imagen" 
         />
 
         {/* Solo muestra flechas si hay más de 1 imagen */}
-        {producto.imagenes.length > 1 && (
+        {listaImagenes.length > 1 && (
           <>
             <button className="flecha flecha-izquierda" onClick={anteriorImagen}>
               &#10094;
@@ -89,7 +94,7 @@ const TarjetaProducto = ({ producto }) => {
               &#10095;
             </button>
             <div className="puntos-indicadores">
-              {producto.imagenes.map((_, idx) => (
+              {listaImagenes.map((_, idx) => (
                 <span 
                   key={idx} 
                   className={`punto ${idx === indiceImagen ? 'activo' : ''}`}
@@ -104,7 +109,7 @@ const TarjetaProducto = ({ producto }) => {
       <div className="producto-info">
         <h3>{producto.nombre}</h3>
         <p className="descripcion">{producto.descripcion}</p>
-        <p className="precio">${producto.precio.toLocaleString('es-CO')}</p>
+        <p className="precio">${producto.precio?.toLocaleString('es-CO')}</p>
         <button className="btn-agregar">
           Añadir al Carrito
         </button>
@@ -114,11 +119,39 @@ const TarjetaProducto = ({ producto }) => {
 };
 
 export const Catalogo = () => {
+  const [productos, setProductos] = useState(productosBasicos);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todos');
+  const [cargando, setCargando] = useState(true);
+
+  // Pide los productos a tu backend conectado a MongoDB Atlas al abrir la página
+  useEffect(() => {
+    fetch('http://localhost:5000/api/productos')
+      .then(res => res.json())
+      .then(data => {
+        // Si MongoDB tiene productos registrados, los usa; si está vacío, mantiene los básicos
+        if (data && data.length > 0) {
+          // Mapeamos por si los campos de la base de datos se llaman ligeramente diferente
+          const productosFormateados = data.map(item => ({
+            id: item._id || item.id,
+            nombre: item.nombre,
+            categoria: item.categoria || 'todos',
+            precio: item.precio,
+            descripcion: item.descripcion || 'Sin descripción',
+            imagenes: item.imagenes && item.imagenes.length > 0 ? item.imagenes : [bufanda1]
+          }));
+          setProductos(productosFormateados);
+        }
+        setCargando(false);
+      })
+      .catch(err => {
+        console.error("No se pudo conectar al backend, usando productos locales:", err);
+        setCargando(false);
+      });
+  }, []);
 
   const productosFiltrados = categoriaSeleccionada === 'todos'
-    ? productosBasicos
-    : productosBasicos.filter(p => p.categoria === categoriaSeleccionada);
+    ? productos
+    : productos.filter(p => p.categoria === categoriaSeleccionada);
 
   const categorias = [
     { key: 'todos', label: 'Todos' },
@@ -151,9 +184,13 @@ export const Catalogo = () => {
 
         {/* Malla de Productos */}
         <div className="productos-grid">
-          {productosFiltrados.map((producto) => (
-            <TarjetaProducto key={producto.id} producto={producto} />
-          ))}
+          {productosFiltrados.length === 0 ? (
+            <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>No hay productos en esta categoría.</p>
+          ) : (
+            productosFiltrados.map((producto) => (
+              <TarjetaProducto key={producto.id || producto._id} producto={producto} />
+            ))
+          )}
         </div>
 
       </div>
