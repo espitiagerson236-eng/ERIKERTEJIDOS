@@ -1,10 +1,5 @@
-<<<<<<< HEAD:src/components/Catalogo.jsx
 import React, { useState, useEffect } from "react";
-import { Navbar } from "./NavBar";
-=======
-import React, { useState } from "react";
 import { useCart } from '../Context/CartContext'; // Importamos el contexto del carrito
->>>>>>> a33cf73d31fbe226848636083456d49eb49fd100:src/pages/Catalogo.jsx
 import './Catalogo.css';
 
 import bufanda1 from '../assets/bufanda1.jpeg';
@@ -17,11 +12,7 @@ import gorropepas1 from '../assets/gorropepas1.jpeg';
 import gorropepas2 from '../assets/gorrospepas2.jpeg';
 import pasamontaña from '../assets/pasamontaña.jpeg';
 
-<<<<<<< HEAD:src/components/Catalogo.jsx
 // Productos locales por defecto (por si la base de datos no tiene elementos aún)
-=======
-// Base de datos de productos
->>>>>>> a33cf73d31fbe226848636083456d49eb49fd100:src/pages/Catalogo.jsx
 const productosBasicos = [
   {
     id: 1,
@@ -94,12 +85,8 @@ const TarjetaProducto = ({ producto }) => {
           className="producto-imagen" 
         />
 
-<<<<<<< HEAD:src/components/Catalogo.jsx
         {/* Solo muestra flechas si hay más de 1 imagen */}
         {listaImagenes.length > 1 && (
-=======
-        {producto.imagenes.length > 1 && (
->>>>>>> a33cf73d31fbe226848636083456d49eb49fd100:src/pages/Catalogo.jsx
           <>
             <button className="flecha flecha-izquierda" onClick={anteriorImagen}>
               &#10094;
@@ -123,18 +110,13 @@ const TarjetaProducto = ({ producto }) => {
       <div className="producto-info">
         <h3>{producto.nombre}</h3>
         <p className="descripcion">{producto.descripcion}</p>
-<<<<<<< HEAD:src/components/Catalogo.jsx
         <p className="precio">${producto.precio?.toLocaleString('es-CO')}</p>
-        <button className="btn-agregar">
-=======
-        <p className="precio">${producto.precio.toLocaleString('es-CO')}</p>
         
         {/* Evento que envía el producto al carrito */}
         <button 
           className="btn-agregar"
           onClick={() => agregarAlCarrito(producto)}
         >
->>>>>>> a33cf73d31fbe226848636083456d49eb49fd100:src/pages/Catalogo.jsx
           Añadir al Carrito
         </button>
       </div>
@@ -154,7 +136,6 @@ export const Catalogo = () => {
       .then(data => {
         // Si MongoDB tiene productos registrados, los usa; si está vacío, mantiene los básicos
         if (data && data.length > 0) {
-          // Mapeamos por si los campos de la base de datos se llaman ligeramente diferente
           const productosFormateados = data.map(item => ({
             id: item._id || item.id,
             nombre: item.nombre,
@@ -188,7 +169,6 @@ export const Catalogo = () => {
 
   return (
     <div className="catalogo-page">
-      {/* ❌ Se eliminó el <Navbar /> que duplicaba el menú */}
       <div className="catalogo-content">
         <h1>Coleccion de ERIKER-TEJIDOS</h1>
         <p>Empieza a comprar tus productos aqui</p>
@@ -208,7 +188,9 @@ export const Catalogo = () => {
 
         {/* Malla de Productos */}
         <div className="productos-grid">
-          {productosFiltrados.length === 0 ? (
+          {cargando ? (
+            <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>Cargando catálogo...</p>
+          ) : productosFiltrados.length === 0 ? (
             <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>No hay productos en esta categoría.</p>
           ) : (
             productosFiltrados.map((producto) => (
