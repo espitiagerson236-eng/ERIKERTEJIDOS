@@ -22,7 +22,6 @@ body {
 .main-content {
   flex: 1;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 4rem 1rem;
+  flex-direction: column;
+  padding: 0;
 }
