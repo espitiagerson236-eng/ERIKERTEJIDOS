@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useCart } from '../Context/CartContext'; // Importamos el contexto del carrito
+import { useCart } from '../Context/CartContext';
 import './Catalogo.css';
 
 import bufanda1 from '../assets/bufanda1.jpeg';
@@ -12,7 +12,20 @@ import gorropepas1 from '../assets/gorropepas1.jpeg';
 import gorropepas2 from '../assets/gorrospepas2.jpeg';
 import pasamontaña from '../assets/pasamontaña.jpeg';
 
-// Productos locales por defecto (por si la base de datos no tiene elementos aún)
+// DICCIONARIO: Conecta las palabras clave de MongoDB con tus imágenes locales de assets
+const mapaImágenes = {
+  "getiYruana": getiYruana,
+  "getiYruana2": getiYruana2,
+  "gorropepas1": gorropepas1,
+  "gorropepas2": gorropepas2,
+  "geti1": geti1,
+  "pasamontaña": pasamontaña,
+  "cuelleros": cuelleros,
+  "bufanda1": bufanda1,
+  "bufanda2": bufanda2
+};
+
+// Productos locales por defecto (por si la base de datos llega a fallar)
 const productosBasicos = [
   {
     id: 1,
@@ -59,12 +72,11 @@ const productosBasicos = [
 // Componente individual para cada producto con carrusel de imágenes
 const TarjetaProducto = ({ producto }) => {
   const [indiceImagen, setIndiceImagen] = useState(0);
-  const { agregarAlCarrito } = useCart(); // Conectamos la función para agregar
+  const { agregarAlCarrito } = useCart();
 
-  // Asegura que las imágenes se lean bien tanto si vienen de MongoDB como de los locales
   const listaImagenes = producto.imagenes && producto.imagenes.length > 0 
     ? producto.imagenes 
-    : [bufanda1]; // Imagen por defecto si no trae arreglo de imágenes
+    : [bufanda1];
 
   const siguienteImagen = () => {
     setIndiceImagen((prev) => (prev + 1) % listaImagenes.length);
@@ -85,7 +97,6 @@ const TarjetaProducto = ({ producto }) => {
           className="producto-imagen" 
         />
 
-        {/* Solo muestra flechas si hay más de 1 imagen */}
         {listaImagenes.length > 1 && (
           <>
             <button className="flecha flecha-izquierda" onClick={anteriorImagen}>
@@ -112,7 +123,6 @@ const TarjetaProducto = ({ producto }) => {
         <p className="descripcion">{producto.descripcion}</p>
         <p className="precio">${producto.precio?.toLocaleString('es-CO')}</p>
         
-        {/* Evento que envía el producto al carrito */}
         <button 
           className="btn-agregar"
           onClick={() => agregarAlCarrito(producto)}
@@ -129,12 +139,11 @@ export const Catalogo = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todos');
   const [cargando, setCargando] = useState(true);
 
-  // Pide los productos a tu backend conectado a MongoDB Atlas al abrir la página
+  // Obtiene los productos desde MongoDB Atlas y traduce sus imágenes usando el mapa
   useEffect(() => {
     fetch('http://localhost:5000/api/productos')
       .then(res => res.json())
       .then(data => {
-        // Si MongoDB tiene productos registrados, los usa; si está vacío, mantiene los básicos
         if (data && data.length > 0) {
           const productosFormateados = data.map(item => ({
             id: item._id || item.id,
@@ -142,7 +151,10 @@ export const Catalogo = () => {
             categoria: item.categoria || 'todos',
             precio: item.precio,
             descripcion: item.descripcion || 'Sin descripción',
-            imagenes: item.imagenes && item.imagenes.length > 0 ? item.imagenes : [bufanda1]
+            // Traduce los nombres de texto que vienen de MongoDB a las variables de tus imágenes locales
+            imagenes: item.imagenes && item.imagenes.length > 0 
+              ? item.imagenes.map(imgKey => mapaImágenes[imgKey] || bufanda1) 
+              : [bufanda1]
           }));
           setProductos(productosFormateados);
         }
